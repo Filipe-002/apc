@@ -1,8 +1,9 @@
 from pandas import read_csv  # pip install pandas
 
 import dash  # pip install dash
-import dash_core_components as dcc  # pip install dash-core-components
-import dash_html_components as html  # pip install dash-html-components
+# import dash_core_components as dc pip install dash-core-components (descontinuado)
+# import dash_html_components as html pip install dash-html-componentsc (descontinuado)
+from dash import dcc, html
 from dash.dependencies import Input, Output
 
 import plotly.express as px  # pip install plotly
@@ -384,64 +385,7 @@ fig5.update_layout(
     font_size=17
 )
 
-"""
-Dash
 
-Ideia geral:
-
-HTML = esqueleto da página
-CSS = beleza, estilo da página
-
-Dividimos o uso do CSS em dois arquivos, nesse mesmo e no styles.css
-Os estilos definidos nesse arquivo são os que serão alterados a partir da ação do botão, 
-enquanto que os do arquivo styles.css são estilos mais fixos
-
-Para referenciar um componente para poder alterar seu estilo com o CSS,
-devemos dar um nome para o componente, por meio da propriedade "className".
-Exemplo: "antes_style" logo abaixo é o className de html.Main lá em baixo,
-logo após as divs com as nossas caras.
-
-As propriedades do CSS são bem intuitivas, por exemplo, magin-top é a distância da div até a próxima div,
-caso não entenda alguma das propriedades, é bom pesquisar.
-
-O Dash é como se fosse um servidor local, que organiza os gráficos e estilos num layout, simulando um HTML & CSS,
-o nosso Dash vai rodar na variável "app".
-
-Basicamente, divs são divisórias, e podemos colocar várias divs dentro das outras para ir criando o layout,
-uma ou mais divs dentro de outra podem ser chamadas de "children", pois teríamos uma div principal e divs filhas,
-
-O botão recebe uma propriedade "n_clicks", que são quantas vezes esse botão foi clicado. Para que o programa faça 
-ações com esses números de clicks, importamos lá em cima o "Input" e o "Output".
-Input: tudo que o usuário envia para o servidor
-Output: tudo que o servidor devolve para o usuário
-
-Exemplo do primeiro gráfico, que serve para os outros Inputs e Outputs (IO):
-
-@app.callback(
-    Output('graph1', 'figure'),
-    [Input('drop1', 'value')]
-)
-def update_graph_1(drop1):
-
-O app.callback vai ler os IO da seguinte forma:
-
-No input, ele vai pegar o "value" do ID da div, que no caso se chama drop1, por ser do dropdown.
-Ou seja, ele vai ler qual valor está selecionado no dropdown.
-
-No output, ele irá até a div com ID de "graph1" e vai alterar a propriedade "figure", que é a que renderiza os gráficos
-
-Entre as ações de IO, ele executará o que está escrito após a função escrita depois de fechar os parenteses,
-que no caso denominamos "update_graph_1", que recebe o valor de drop1.
-
-No caso do exemplo, ele formará um gráfico novo, mas nos outros app.callback ele irá ficar alterando os estilos, que criamos logo abaixo
-
-Como estudar para entender o que tá rolando em tudo:
-Dar uma lida geral na parte do HTML, prestando atenção nas className e nos IDs, e ir comparando com os stlyes
-Ler todos os app.callback, exercitando a parada lá de ler o quê da onde e retorna o quê aonde
-Entender o que cada função depois do app.callback faz.
-
-
-"""
 
 antes_style = {
     'opacity': 0
@@ -487,7 +431,7 @@ video_antes = {
 }
 
 video_durante = {
-    'background': 'url(./assets/background.gif)',
+    'background': 'url(./assets/background.png)',
     'min-height': '100%',
     'background-position': 'center center',
     'background-size': 'cover',
@@ -495,14 +439,14 @@ video_durante = {
 }
 
 video_depois = {
-    'height': 'auto',
-    'min-height': '100%',
-    'width': 'auto',
-    'background-position': 'center',
+    'min-height': '100vh',  # altura mínima da tela (não fixa)
+    'width': '100vw',
+    'background': 'black url(./assets/wallpaper2.png) no-repeat center center',
     'background-size': 'cover',
-    'background': 'url(./assets/wallpaper2.png) no-repeat',
     'background-attachment': 'fixed',
-    'transition': 'background 3s ease-in-out'
+    'transition': 'background 3s ease-in-out',
+    'overflow-x': 'hidden'  # só esconde rolagem horizontal, mas permite vertical
+    # não defina overflow: hidden geral!
 }
 
 grupo_antes = {
@@ -616,7 +560,7 @@ app.layout = html.Div(
                                                options=[{'label': str(j), 'value': j}
                                                         for j in order],
                                                value='Cronológico'),
-                                  dcc.Graph(id='graph1')
+                                  dcc.Graph(id='graph1', style={'height': '500px'})
                               ]
                           ),
                           html.Div(
@@ -786,4 +730,4 @@ def mudar_fotos(n_clicks):
 # Para ficar mais dinâmico, basta deixar o código rodando apertar Ctrl + S para salvar,
 # O Dash vai atualizar sozinho a cada 5 segundos +-, ou vc pode só clicar em reload mesmo
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run(debug=True)
